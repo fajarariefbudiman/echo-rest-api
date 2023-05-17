@@ -3,6 +3,7 @@ package router
 import (
 	"echo-api/controller"
 	"echo-api/middleware"
+
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -21,6 +22,7 @@ func Init() *echo.Echo {
 	panitiaGroup := e.Group("/panitia")
 	panitiaGroup.Use(authMiddleware)
 	panitiaGroup.GET("", controller.GetAllUsers)
+	panitiaGroup.GET("/:id", controller.GetUsersByID)
 	panitiaGroup.POST("", controller.CreateUsers)
 	panitiaGroup.PUT("/:id", controller.UpdateUsers)
 	panitiaGroup.DELETE("/:id", controller.DeleteUsersById)

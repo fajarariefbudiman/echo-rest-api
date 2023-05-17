@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/go-playground/validator/v10"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 type Users struct {
@@ -146,4 +147,27 @@ func UpdateUsers(Id int, Name string, Email string, Class int) (Response, error)
 
 }
 
+func GetUsersById(id int) (Response, error) {
+	var get Users
+	var res Response
 
+	cond := db.NewData()
+	sqlstmt := "select id,name,email,class from users where id=?"
+
+	rows, err := cond.Query(sqlstmt, id)
+	if err != nil {
+		panic(err)
+	}
+	defer rows.Close()
+	for rows.Next() {
+		err = rows.Scan(&get.Id, &get.Name, &get.Email, &get.Class)
+		if err != nil {
+			return res, err
+		}
+		res.Status = http.StatusOK
+		res.Message = "Success"
+		res.Data = get
+	}
+
+	return res, nil
+}

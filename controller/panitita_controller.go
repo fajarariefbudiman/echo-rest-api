@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo/v4"
 )
 
@@ -67,6 +68,21 @@ func UpdateUsers(c echo.Context) error {
 	result, err := service.UpdateUsers(strid, nama, email, strclass)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, result)
+}
+func GetUsersByID(c echo.Context) error {
+	id := c.QueryParam("id")
+
+	strcid, err := strconv.Atoi(id)
+	if err != nil {
+		return err
+	}
+
+	result, err := service.GetUsersById(strcid) // Panggil fungsi GetUsersByID dari service layer
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": err.Error()})
 	}
 
 	return c.JSON(http.StatusOK, result)
